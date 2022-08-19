@@ -11,8 +11,10 @@ from rave.core import search_for_run
 #from udls import SimpleDataset, simple_audio_preprocess
 #from effortless_config import Config
 #from rave.audiodata import AudioDataset
-from aeiou.datasets import AudioDataset
 from prefigure.prefigure import get_all_args, push_wandb_config
+from aeiou.hpc import HostPrinter
+from aeiou.datasets import AudioDataset
+
 
 from os import environ, path
 import numpy as np
@@ -36,12 +38,14 @@ if __name__ == "__main__":
 
     accelerator = accelerate.Accelerator()
     device = accelerator.device
-    print('Using device:', device, flush=True)
+
+    hprint = HostPrinter(accelerator)  # hprint only prints on head node
+    hprint(f'Using device: {device}')
 
     # special parsing for arg lists (TODO: could add this functionality to prefigure later):
     args.ratios = eval(''.join(args.ratios))
     args.transforms = eval(args.transforms)
-    print("args = ",args)
+    hprint(f"args = {args}")
     assert args.name is not None
 
     model = RAVE(data_size=args.data_size,
@@ -78,7 +82,8 @@ if __name__ == "__main__":
             preprocess_function=simple_audio_preprocess(args.sr, 2 * args.n_signal),
             split_set="full",
             transforms=Compose( args.transforms ),
-        ) 
+        )
+    hprint(f"len(dataset) = {len(dataset)}.") 
 
     train = DataLoader(dataset, args.batch, True, drop_last=True, num_workers=8)
     
@@ -96,7 +101,7 @@ if __name__ == "__main__":
         wandb.init(project=args.name, config=config, save_code=True)
 
     if use_wandb:
-        wandb.watch(model)
+        wandb.watch(model,log_freq=2)
 
     step = 0
     epoch = 0

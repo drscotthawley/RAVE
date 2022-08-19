@@ -686,6 +686,7 @@ class RAVE(nn.Module):
             y = self.pqmf.inverse(y)
         return y
 
+    @torch.no_grad()
     def validation_step(self, batch):
         p = Profiler()
         x = batch.unsqueeze(1).to(self.device)
@@ -714,6 +715,7 @@ class RAVE(nn.Module):
 
         return torch.cat([x, y], -1), mean
 
+    @torch.no_grad()
     def validation_epoch_end(self, out):
         audio, z = list(zip(*out))
 

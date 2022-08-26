@@ -23,7 +23,7 @@ setup(
         'torchaudio', 
         'tensorboard==2.8.0', 
         'GPUtil==1.4.0', 
-        'wandb==0.12.7', 
+        'wandb>=0.12.7', 
         'cached_conv @ git+https://github.com/caillonantoine/cached_conv.git#egg=cached_conv', 
         'udls @ git+https://github.com/caillonantoine/UDLS.git#egg=udls'],
     # ...

@@ -44,7 +44,6 @@ if __name__ == "__main__":
 
     # special parsing for arg lists (TODO: could add this functionality to prefigure later):
     args.ratios = eval(''.join(args.ratios))
-    args.transforms = eval(args.transforms)
     hprint(f"args = {args}")
     assert args.name is not None
 
@@ -75,6 +74,7 @@ if __name__ == "__main__":
     if True: # new aeiou dataset class
         dataset = AudioDataset(args.wav, sample_size=args.n_signal, sample_rate=args.sr, augs=args.augs, load_frac=args.load_frac)
     else:  # antoine's old class that called preprocessing for you.
+        args.transforms = eval(args.transforms)
         dataset = SimpleDataset(
             args.preprocessed,
             args.wav,

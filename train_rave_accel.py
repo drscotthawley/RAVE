@@ -132,8 +132,8 @@ if __name__ == "__main__":
                     p.tick("gen_opt step")
 
                 if accelerator.is_main_process:
-                    if step % 500 == 0:
-                        tqdm.write(f'Epoch: {epoch}, step: {step}, loss: {loss_gen.item():g}')
+                    if step % 200 == 0:
+                        tqdm.write(f'   Epoch: {epoch}, step: {step}, loss: {loss_gen.item():g}')
 
                     if use_wandb and step % 50 == 0:
                         log_dict['epoch'] = epoch
@@ -147,7 +147,7 @@ if __name__ == "__main__":
                     output = model_unwrap.validation_step(batch.detach())
                     p.tick("Validation")
 
-                    if hasattr(args,'check_ofc_every') and (step > 0) and (step % args.check_ofc_every == 0):
+                    if hasattr(args,'check_ofc_every') and (step % args.check_ofc_every == 0):
                         changes_dict = ofc.update()   # check for changes. NOTE: all "args" updated automatically
                         if use_wandb and {} != changes_dict:        # other things to do with changes: log to wandb
                             wandb.log({'args/'+k:v for k,v in changes_dict.items()}, step=step) 
@@ -157,7 +157,7 @@ if __name__ == "__main__":
                         p.tick("Demo")
 
                     if (step > 0) and (step % args.checkpoint_every == 0):
-                        hprint("\nSaving model")
+                        hprint("\nSaving model checkpoint")
                         save(accelerator,args,model,epoch=epoch,step=step)
                         #print(p)
 

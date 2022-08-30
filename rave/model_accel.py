@@ -490,6 +490,7 @@ class RAVE(nn.Module):
         self.automatic_optimization = False
 
         self.warmup = warmup
+        print("RAVE accel: self.warmup = ",self.warmup)
         self.warmed_up = False
         self.sr = sr
         self.mode = mode
@@ -570,6 +571,12 @@ class RAVE(nn.Module):
     def training_step(self, batch, step):
         p = Profiler()
         self.saved_step += 1
+
+        # SHH experimental, this code used to only exist in validation step
+        #if (self.saved_step > self.warmup) and (not self.warmed_up):
+        #    print("\n--------- in model_accel: training_step: setting self.warmed_up = True ")
+        #    self.warmed_up = True
+
 
         x = batch.unsqueeze(1).to(self.device)
 
@@ -719,7 +726,8 @@ class RAVE(nn.Module):
     def validation_epoch_end(self, out):
         audio, z = list(zip(*out))
 
-        if self.saved_step > self.warmup:
+        if (self.saved_step > self.warmup) and (not self.warmed_up):
+            print("\n--------- in model_accel: validation_epoch_end: setting self.warmed_up = True ")
             self.warmed_up = True
 
         log_dict = {}

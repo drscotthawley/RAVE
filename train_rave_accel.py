@@ -132,7 +132,7 @@ if __name__ == "__main__":
                     p.tick("gen_opt step")
 
                 if accelerator.is_main_process:
-                    if step % 200 == 0:
+                    if step % 500 == 0:
                         tqdm.write(f'   Epoch: {epoch}, step: {step}, loss: {loss_gen.item():g}')
 
                     if use_wandb and step % 50 == 0:

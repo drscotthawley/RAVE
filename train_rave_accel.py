@@ -11,8 +11,8 @@ from rave.core import search_for_run
 #from udls import SimpleDataset, simple_audio_preprocess
 #from effortless_config import Config
 #from rave.audiodata import AudioDataset
-from prefigure.prefigure import get_all_args, push_wandb_config
-from aeiou.hpc import HostPrinter
+from prefigure.prefigure import get_all_args, push_wandb_config, OFC
+from aeiou.hpc import HostPrinter, save
 from aeiou.datasets import AudioDataset
 
 
@@ -28,6 +28,7 @@ if __name__ == "__main__":
 
 
     args = get_all_args()
+    ofc = OFC(args)
 
     torch.manual_seed(args.seed)
 
@@ -150,9 +151,10 @@ if __name__ == "__main__":
                         model_unwrap.validation_epoch_end([output])
                         p.tick("Demo")
 
-                # if step > 0 and step % args.checkpoint_every == 0:
-                #     save()
-                #print(p)
+                    if (step > 0) and (step % args.checkpoint_every == 0):
+                        hprint("\nSaving model")
+                        save(accelerator,args,model,epoch=epoch,step=step)
+                        #print(p)
 
                 step += 1
             epoch += 1

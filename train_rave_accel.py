@@ -147,6 +147,11 @@ if __name__ == "__main__":
                     output = model_unwrap.validation_step(batch.detach())
                     p.tick("Validation")
 
+                    if hasattr(args,'check_ofc_every') and (step > 0) and (step % args.check_ofc_every == 0):
+                        changes_dict = ofc.update()   # check for changes. NOTE: all "args" updated automatically
+                        if use_wandb and {} != changes_dict:        # other things to do with changes: log to wandb
+                            wandb.log({'args/'+k:v for k,v in changes_dict.items()}, step=step) 
+
                     if step % args.val_every == 0:
                         model_unwrap.validation_epoch_end([output])
                         p.tick("Demo")

@@ -9,7 +9,7 @@ from rave.core import search_for_run
 
 #from udls import SimpleDataset, simple_audio_preprocess
 #from effortless_config import Config
-from prefigure.prefigure import get_all_args, push_wandb_config
+from prefigure import get_all_args, push_wandb_config
 from aeiou.hpc import HostPrinter
 from aeiou.datasets import AudioDataset
 

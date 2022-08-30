@@ -11,7 +11,7 @@ from rave.core import search_for_run
 #from udls import SimpleDataset, simple_audio_preprocess
 #from effortless_config import Config
 #from rave.audiodata import AudioDataset
-from prefigure.prefigure import get_all_args, push_wandb_config, OFC
+from prefigure import get_all_args, push_wandb_config, OFC
 from aeiou.hpc import HostPrinter, save
 from aeiou.datasets import AudioDataset
 

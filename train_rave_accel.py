@@ -12,7 +12,7 @@ from rave.core import search_for_run
 #from effortless_config import Config
 #from rave.audiodata import AudioDataset
 from prefigure import get_all_args, push_wandb_config, OFC
-from aeiou.hpc import HostPrinter, save
+from aeiou.hpc import HostPrinter, save, load
 from aeiou.datasets import AudioDataset
 
 
@@ -90,6 +90,9 @@ if __name__ == "__main__":
     
     model, gen_opt, dis_opt, train = accelerator.prepare(model, gen_opt, dis_opt, train)
 
+    if args.ckpt is not None: 
+        model = load(accelerator, model, args.ckpt)
+
     if accelerator.is_main_process:
         x = torch.zeros(args.batch, 2**14).to(device)
         accelerator.unwrap_model(model).validation_step(x)
@@ -133,7 +136,7 @@ if __name__ == "__main__":
 
                 if accelerator.is_main_process:
                     if step % 500 == 0:
-                        tqdm.write(f'   Epoch: {epoch}, step: {step}, loss: {loss_gen.item():g}')
+                        tqdm.write(f'\n   Epoch: {epoch}, step: {step}, loss: {loss_gen.item():g}')
 
                     if use_wandb and step % 50 == 0:
                         log_dict['epoch'] = epoch
